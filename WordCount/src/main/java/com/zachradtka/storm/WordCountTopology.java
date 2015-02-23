@@ -17,7 +17,16 @@ import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 
+import com.zachradtka.storm.bolts.PrinterBolt;
+
 public class WordCountTopology {
+
+	public static final String SPOUT_NAME = "spout";
+	public static final String BOLT_NAME_SPLIT_SENTENCE = "split";
+	public static final String BOLT_NAME_WORD_COUNT = "count";
+	public static final String BOLT_NAME_DISPLAY = "display";
+
+
 
 	public static class SplitSentence extends BaseBasicBolt {
 
@@ -26,7 +35,7 @@ public class WordCountTopology {
 		 */
 		private static final long serialVersionUID = 4940443045817317217L;
 
-		private static final String outputFieldName = "word";
+		private static final String OUTPUT_FIELD_NAME = "word";
 
 		@Override
 		public void execute(Tuple input, BasicOutputCollector collector) {
@@ -40,7 +49,7 @@ public class WordCountTopology {
 
 		@Override
 		public void declareOutputFields(OutputFieldsDeclarer declarer) {
-			declarer.declare(new Fields(outputFieldName));
+			declarer.declare(new Fields(OUTPUT_FIELD_NAME));
 		}
 
 	}
@@ -54,8 +63,8 @@ public class WordCountTopology {
 		private static final long serialVersionUID = 3445219534213811355L;
 
 
-		private static final String outputFieldName0 = "word";
-		private static final String outputFieldName1 = "count";
+		private static final String OUTPUT_FIELD_NAME_0 = "word";
+		private static final String OUTPUT_FIELD_NAME_1 = "count";
 
 
 		private Map<String, Integer> wordCount = new HashMap<String, Integer>();
@@ -81,7 +90,7 @@ public class WordCountTopology {
 
 		@Override
 		public void declareOutputFields(OutputFieldsDeclarer declarer) {
-			declarer.declare(new Fields(outputFieldName0, outputFieldName1));
+			declarer.declare(new Fields(OUTPUT_FIELD_NAME_0, OUTPUT_FIELD_NAME_1));
 		}
 
 	}
@@ -89,14 +98,32 @@ public class WordCountTopology {
 
 	public static void main(String[] args) throws AlreadyAliveException, InvalidTopologyException,
 			InterruptedException {
+
 		TopologyBuilder builder = new TopologyBuilder();
-		builder.setSpout("spout", new RandomSentenceSpout(), 5);
-		builder.setBolt("split", new SplitSentence(), 8).shuffleGrouping("spout");
-		builder.setBolt("count", new WordCount(), 12).fieldsGrouping("split", new Fields("word"));
+		
+		// Set the spout
+		builder.setSpout(SPOUT_NAME, new RandomSentenceSpout(), 5);
+		
+		// The first bolt will split the lines based on spaces
+		builder.setBolt(BOLT_NAME_SPLIT_SENTENCE, 
+				new SplitSentence(), 
+				8).shuffleGrouping(SPOUT_NAME);
+		
+		// This bolt will keep a running count of how many times a word has been seen
+		builder.setBolt(BOLT_NAME_WORD_COUNT, 
+				new WordCount(), 
+				12).fieldsGrouping(BOLT_NAME_SPLIT_SENTENCE, 
+						new Fields(WordCount.OUTPUT_FIELD_NAME_0));
+		
+		// Display the results of the previous bolt
+		builder.setBolt(BOLT_NAME_DISPLAY, 
+				new PrinterBolt(), 
+				1).shuffleGrouping(BOLT_NAME_WORD_COUNT);
 
 
 		Config conf = new Config();
-		conf.setDebug(true);
+		// Turn debug on/off to see output from all bolts
+		// conf.setDebug(true);
 
 		if (args != null && args.length > 0) {
 			conf.setNumWorkers(3);

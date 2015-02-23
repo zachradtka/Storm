@@ -3,18 +3,30 @@
 	<modelVersion>4.0.0</modelVersion>
 
 
-	<parent>
-		<groupId>com.zachradtka</groupId>
-		<artifactId>Storm</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
+	<groupId>com.zachradtka</groupId>
+	<artifactId>Storm</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>Storm</name>
+	<description>Sample code for Apache Storm</description>
 
-	<groupId>com.zachradtka.storm</groupId>
-	<artifactId>WordCount</artifactId>
-	<packaging>jar</packaging>
+
+	<developers>
+		<developer>
+			<id>zachradtka</id>
+			<name>Zachary Radtka</name>
+			<email>zachary.radtka@gmail.com</email>
+		</developer>
+	</developers>
+
+
+	<properties>
+		<storm.version>0.9.3</storm.version>
+		<java.version>1.7</java.version>
+	</properties>
 
 	<dependencies>
+
 		<dependency>
 			<groupId>org.apache.storm</groupId>
 			<artifactId>storm-core</artifactId>
@@ -33,6 +45,17 @@
 		</resources>
 
 		<plugins>
+
+			<!-- Set the compiler version -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
 
 
 			<!-- Bind the maven-assembly-plugin to the package phase this will create 
@@ -60,6 +83,7 @@
 				</executions>
 			</plugin>
 
+
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
@@ -81,4 +105,6 @@
 			</plugin>
 		</plugins>
 	</build>
+
+
 </project>

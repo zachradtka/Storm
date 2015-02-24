@@ -19,6 +19,8 @@
 			<groupId>org.apache.storm</groupId>
 			<artifactId>storm-core</artifactId>
 			<version>${storm.version}</version>
+			<!-- keep storm out of the jar-with-dependencies -->
+      		<scope>provided</scope>
 		</dependency>
 	</dependencies>
 

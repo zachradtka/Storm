@@ -1,4 +1,4 @@
-package com.zachradtka.storm;
+package storm;
 
 import java.util.Map;
 import java.util.Random;

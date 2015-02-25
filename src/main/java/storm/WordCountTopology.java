@@ -1,9 +1,10 @@
-package com.zachradtka.storm;
+package storm;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import storm.bolts.PrinterBolt;
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
 import backtype.storm.StormSubmitter;
@@ -16,8 +17,6 @@ import backtype.storm.topology.base.BaseBasicBolt;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
-
-import com.zachradtka.storm.bolts.PrinterBolt;
 
 public class WordCountTopology {
 

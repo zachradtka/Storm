@@ -4,10 +4,11 @@
 
 
 	<groupId>com.zachradtka</groupId>
-	<artifactId>Storm</artifactId>
+	<artifactId>storm-examples</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
-	<name>Storm</name>
+	<packaging>jar</packaging>
+	<name>storm-examples</name>
+	
 	<description>Sample code for Apache Storm</description>
 
 
@@ -39,7 +40,7 @@
 
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
-		<testSourceDirectory>src/test/jvm</testSourceDirectory>
+		<testSourceDirectory>src/test/java</testSourceDirectory>
 		<resources>
 			<resource>
 				<directory>src/test/resources</directory>

@@ -1,4 +1,4 @@
-package com.zachradtka.storm.bolts;
+package storm.bolts;
 
 import backtype.storm.topology.BasicOutputCollector;
 import backtype.storm.topology.OutputFieldsDeclarer;

@@ -205,5 +205,40 @@ storm-ui       RUNNING    pid 16862, uptime 0:00:42
 
 The following is a listing of examples in this repository.
 
+### Basic Append Topology
+
+This example uses a single bolt to append a string onto incoming tuples. For example if the value coming in is "tacos" and the value being appended is " is awesome", the output of the bolt will be "tacos is awesome".
+
+This topology can be run locally or remotely and takes the following command line arguments
+
+```
+OPTIONS
+    -n=NAME
+        set the topology name to NAME
+    -r
+        execute on a remote Storm cluster
+    -v=VALUE
+        append VALUE to the end of words
+
+```
+
+#### Examples
+
+Run in local mode (LocalCluster), with topology name "appendTopology"
+
+```
+$ storm jar storm-examples-jar-with-dependencies.jar storm.BasicAppendTopology
+```
+
+Runs in local mode (LocalCluster), with topology append value "?"
+```
+$ storm jar storm-examples-jar-with-dependencies.jar storm.BasicAppendTopology -v=?
+```
+Runs in remote/cluster mode, with topology name "production-topology"
+
+```
+$ storm jar storm-examples-jar-with-dependencies.jar storm.BasicAppendTopology -v=? -n=production-topology -r
+```
+
 ### WordCount
 

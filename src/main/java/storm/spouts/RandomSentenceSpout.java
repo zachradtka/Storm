@@ -1,4 +1,4 @@
-package storm;
+package storm.spouts;
 
 import java.util.Map;
 import java.util.Random;

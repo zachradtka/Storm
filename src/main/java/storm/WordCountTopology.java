@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import storm.bolts.PrinterBolt;
+import storm.spouts.RandomSentenceSpout;
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
 import backtype.storm.StormSubmitter;

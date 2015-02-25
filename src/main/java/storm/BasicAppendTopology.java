@@ -115,7 +115,6 @@ public class BasicAppendTopology {
 		String topologyName = "appendTopology";
 		String appendValue = "!";
 		
-		
 		// Ensure that the correct arguments were specified at runtime
 		if (args.length > 3) {
 			displayUsage();
@@ -152,7 +151,6 @@ public class BasicAppendTopology {
 
 		// The topology can be run locally or remotely 
 		if (runLocally) {
-			// Run 
 			conf.setMaxTaskParallelism(3);
 			LocalCluster cluster = new LocalCluster();
 			cluster.submitTopology("append", conf, builder.createTopology());

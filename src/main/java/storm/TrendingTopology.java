@@ -10,6 +10,7 @@ import backtype.storm.topology.TopologyBuilder;
 
 public class TrendingTopology {
 
+	/** The name of the topology */
 	public static final String TOPOLOGY_NAME = "trendingTopology";
 	
 	/** The name of the spout */
@@ -18,11 +19,7 @@ public class TrendingTopology {
 	
 	public static void main(String[] args) throws InterruptedException, AlreadyAliveException, InvalidTopologyException {
 		
-		
 		boolean runLocally = true;
-		
-
-
 		
 		// Create a new topology
 		TopologyBuilder builder = new TopologyBuilder();

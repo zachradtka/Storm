@@ -23,6 +23,9 @@ import backtype.storm.tuple.Values;
  */
 public class BasicAppendTopology {
 	
+	/** The name of the topology */
+	public static final String TOPOLOGY_NAME = "appendTopology";
+	
 	/** The name of the spout */
 	public static final String SPOUT_NAME = "spout";
 	
@@ -112,7 +115,7 @@ public class BasicAppendTopology {
 			InterruptedException {
 
 		boolean runLocally = true;
-		String topologyName = "appendTopology";
+		String topologyName = TOPOLOGY_NAME;
 		String appendValue = "!";
 		
 		// Ensure that the correct arguments were specified at runtime
@@ -124,7 +127,7 @@ public class BasicAppendTopology {
 		// Get the values from the command line
 		for (int i = 0; i < args.length; i++) {
 			if (args[i].startsWith("-n=")) {
-				topologyName = args[i].substring(args[i].indexOf('=') + 1, args[i].length());
+				topologyName = topologyName.concat(args[i].substring(args[i].indexOf('=') + 1, args[i].length()));
 			} else if (args[i].equalsIgnoreCase("-r")){
 				runLocally = false;
 			} else if (args[i].startsWith("-v=")) {
@@ -153,7 +156,7 @@ public class BasicAppendTopology {
 		if (runLocally) {
 			conf.setMaxTaskParallelism(3);
 			LocalCluster cluster = new LocalCluster();
-			cluster.submitTopology("append", conf, builder.createTopology());
+			cluster.submitTopology(topologyName, conf, builder.createTopology());
 			Thread.sleep(10000);
 			cluster.shutdown();			
 		} else {

@@ -1,11 +1,11 @@
 package storm.bolts;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 
+import storm.util.SlidingWindow;
 import backtype.storm.Config;
 import backtype.storm.Constants;
 import backtype.storm.task.OutputCollector;
@@ -29,19 +29,31 @@ public class SlidingWindowBolt extends BaseRichBolt {
 	/** The id of the second output field */
 	private static final String OUTPUT_ID_1 = "count";
 	
+	private static final int DEFAULT_WINDOW_SIZE = 6;
+	
+	private static final int DEFAULT_EMIT_FREQUENCY = 10;
+	
 	/** The local collector to control emitting of tuples */
 	private OutputCollector collector;
 	
 	/** The frequency, in seconds, of when to emit a tuple */
 	private final int emitFrequency;
 	
+	SlidingWindow<Object> elementCount;
 	
-	Map<String, Long> wordCount;
+	
+	public SlidingWindowBolt() {
+		this(DEFAULT_EMIT_FREQUENCY, DEFAULT_WINDOW_SIZE);
+	}
+	
 	
 	public SlidingWindowBolt(int emitFrequency) {
+		this(emitFrequency, DEFAULT_WINDOW_SIZE);
+	}
+	
+	public SlidingWindowBolt(int emitFrequency, int windowSize) {
 		this.emitFrequency = emitFrequency;
-		wordCount = new HashMap<String, Long>();
-
+		elementCount = new SlidingWindow<Object>(windowSize);
 	}
 	
 	
@@ -57,38 +69,20 @@ public class SlidingWindowBolt extends BaseRichBolt {
 	public void execute(Tuple input) {
 		if (isTickTuple(input)) {
 			
-			Set<String> keys = wordCount.keySet();
-						
-			// Output the count and remove the entry to reset it's value
-			for (String key : keys) {
+			LOG.debug("Tick encountered, emitting counts");
+			
+			Map<Object, Long> elements = elementCount.getCountAndAdvanceWindow();
+			
+			for (Entry<Object, Long> entry: elements.entrySet()) {
+				Object obj = entry.getKey();
+				Long count = entry.getValue();
 				
-				LOG.info("Emit " + key + ": " + wordCount.get(key));
-
-				collector.emit(new Values(key, wordCount.get(key)));
+				collector.emit(new Values(obj, count));
 			}
-			
-			wordCount.clear();
-			
-		} else {
-			// add to a tuples count
-			// The word being processed
-			String word = input.getString(0);
 						
-			// The number of times a word has been seen
-			Long currCount = null;
-
-			// Initialize a count if it doesn't exist
-			if ((currCount = wordCount.get(word)) == null) {
-				currCount = 0L;
-			}
-
-			// Update the word count
-			currCount++;
-			
-			LOG.info(word + ": " + currCount);
-			wordCount.put(word, currCount);
-			
-			// Ack the tuple to it is never counted twice
+		} else {
+			Object obj = input.getValue(0);
+			elementCount.incrementCount(obj);
 			collector.ack(input);
 		}
 		

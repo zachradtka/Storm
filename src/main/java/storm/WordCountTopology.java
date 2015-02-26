@@ -180,7 +180,7 @@ public class WordCountTopology {
 		builder.setBolt(BOLT_NAME_WORD_COUNT, 
 				new WordCount(), 
 				12).fieldsGrouping(BOLT_NAME_SPLIT_SENTENCE, 
-						new Fields(WordCount.OUTPUT_FIELD_NAME_0));
+						new Fields(SplitSentence.OUTPUT_FIELD_NAME));
 		
 		// Display the results of the previous bolt
 		builder.setBolt(BOLT_NAME_DISPLAY, 

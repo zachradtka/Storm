@@ -1,5 +1,6 @@
 package storm;
 
+import storm.bolts.SlidingWindowBolt;
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
 import backtype.storm.StormSubmitter;
@@ -7,6 +8,7 @@ import backtype.storm.generated.AlreadyAliveException;
 import backtype.storm.generated.InvalidTopologyException;
 import backtype.storm.testing.TestWordSpout;
 import backtype.storm.topology.TopologyBuilder;
+import backtype.storm.tuple.Fields;
 
 public class TrendingTopology {
 
@@ -26,6 +28,9 @@ public class TrendingTopology {
 
 		// Set the spout
 		builder.setSpout(SPOUT_NAME, new TestWordSpout(), 5);
+		
+		
+		builder.setBolt("sliding-window", new SlidingWindowBolt(2), 10).fieldsGrouping(SPOUT_NAME, new Fields("word"));
 
 
 		// Turn debug on/off to see output from all bolts

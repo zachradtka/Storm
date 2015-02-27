@@ -24,8 +24,8 @@ public class SlidingWindow<T> implements Serializable{
 	/** The position of the last slot in the window */
 	private int tail;
 	
-	public SlidingWindow(int size) {
-		this.numSlots = size;
+	public SlidingWindow(int numSlots) {
+		this.numSlots = numSlots;
 		this.head = 0;
 		this.tail = slotAfter(this.head);
 	}

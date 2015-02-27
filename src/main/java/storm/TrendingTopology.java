@@ -30,7 +30,7 @@ public class TrendingTopology {
 		builder.setSpout(SPOUT_NAME, new TestWordSpout(), 5);
 		
 		
-		builder.setBolt("sliding-window", new SlidingWindowBolt(2), 10).fieldsGrouping(SPOUT_NAME, new Fields("word"));
+		builder.setBolt("sliding-window", new SlidingWindowBolt(3, 15), 10).fieldsGrouping(SPOUT_NAME, new Fields("word"));
 
 
 		// Turn debug on/off to see output from all bolts

@@ -29,8 +29,10 @@ public class SlidingWindowBolt extends BaseRichBolt {
 	/** The id of the second output field */
 	private static final String OUTPUT_ID_1 = "count";
 	
-	private static final int DEFAULT_WINDOW_SIZE = 6;
+	/** The size of the window in seconds */
+	private static final int DEFAULT_WINDOW_SIZE = 60;
 	
+	/** The frequency to emit results, in seconds */
 	private static final int DEFAULT_EMIT_FREQUENCY = 10;
 	
 	/** The local collector to control emitting of tuples */
@@ -52,17 +54,15 @@ public class SlidingWindowBolt extends BaseRichBolt {
 	}
 	
 	public SlidingWindowBolt(int emitFrequency, int windowSize) {
-		this.emitFrequency = emitFrequency;
-		elementCount = new SlidingWindow<Object>(windowSize);
+		this.emitFrequency = emitFrequency;	
+		elementCount = new SlidingWindow<Object>(windowSize/emitFrequency);
 	}
 	
 	
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
-
 		this.collector = collector;
-		
 	}
 
 	@Override
@@ -79,13 +79,13 @@ public class SlidingWindowBolt extends BaseRichBolt {
 				
 				collector.emit(new Values(obj, count));
 			}
-						
+		
 		} else {
 			Object obj = input.getValue(0);
 			elementCount.incrementCount(obj);
 			collector.ack(input);
 		}
-		
+
 	}
 
 	@Override
